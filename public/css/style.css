@@ -1,0 +1,45 @@
+/* =============================== begin header =============================== */
+/* General Body Styles */
+body {
+    font-family: 'Noto Serif JP';
+    margin: 0;
+    padding: 0;
+    line-height: 150%;
+}
+
+/* breacum */
+.contact-section-banner {
+    position: relative;
+    height: 280px;
+    overflow: hidden;
+}
+
+.contact-section-banner .banner-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.contact-section-banner-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+
+.contact-section-banner-content .section-title {
+    color: #FFFFFF;
+}
+
+.contact-section-breadcrumb {
+    display: flex;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 10px 20px;
+}
