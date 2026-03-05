@@ -2,69 +2,51 @@
 
 namespace App\Controllers;
 
-
-use App\Repositories\LocationDistrictRepository;
-use App\Repositories\LocationRepository;
+use App\Repositories\CategoryRepository;
+use App\Repositories\ProductRepository;
 use Cache;
 
 class HomeController extends BaseController
 {
-    protected $locationDistrictRepository;
-    protected $locationRepository;
-
+    protected $categoryRepository;
+    protected $productRepository;
     protected $locationData;
 
     public function __construct()
     {
         parent::__construct();
-        $this->locationDistrictRepository = new LocationDistrictRepository();
-        $this->locationRepository = new LocationRepository();
+        $this->categoryRepository = new CategoryRepository();
+        $this->productRepository = new ProductRepository();
         $this->locationData = null;
     }
 
-    public function index($city = null, $district = null)
+    public function index()
     {
-        // Cache hot data to avoid repeated DB hits on first paint
-        // $cacheTtl = 1800; // 30 minutes
-        // $tên = Cache::remember('fewfix:{giá trị key bất kỳ}', $cacheTtl, function () {
-        // //    giá trị cần cache
-        // });
-
-        $pageTitle = '';
-        $pageDescription = '';
-        // If city or district parameters are provided, get location data
-        if ($city || $district) {
-            if ($city && $district) {
-                // Get district data with city info
-                $this->locationData = $this->locationDistrictRepository->findActiveByCityAndDistrict($city, $district);
-
-                if ($this->locationData) {
-                    $pageTitle = $this->locationData->city_name . ' ' . $this->locationData->name . 'で浮気・不倫問題はサレ妻探偵へ';
-                    $pageDescription = $this->locationData->city_name . ' ' . $this->locationData->name . 'での浮気調査・不倫調査はお任せください';
-                }
-            } elseif ($city) {
-                // Get city data only
-                $this->locationData = $this->locationRepository->findActiveByName($city);
-
-                if ($this->locationData) {
-                    $pageTitle = $this->locationData->name . 'で浮気・不倫問題はサレ妻探偵へ';
-                    $pageDescription = $this->locationData->name . 'での浮気調査・不倫調査はお任せください';
-                }
+        $pageTitle = 'Home';
+        $pageDescription = 'Online store';
+        $categories = $this->categoryRepository->getAllCategoriesWithChild();
+        $featured = $newArrivals = $bestSellers = [];
+        try {
+            $featuredResult = $this->productRepository->getProductsForShop(1, 8, null);
+            $featured = $featuredResult['data'] ?? [];
+            $newArrivals = $this->productRepository->getLatest(8, 0);
+            $bestSellers = $this->productRepository->getBestSellersFromOrders(8);
+            if (empty($bestSellers)) {
+                $bestSellers = $this->productRepository->getLatest(8, 8);
             }
+        } catch (\Throwable $e) {
+            // Products table may not exist yet
         }
-
         $data = [
             'title' => $pageTitle,
             'description' => $pageDescription,
-            'location' => $this->locationData,
-            'district' => $district,
-            'features' => [
-                'Lightweight and Fast',
-                'Simple Routing System',
-                'Database Abstraction Layer',
-                'Template Engine',
-                'Model-View-Controller Architecture'
-            ]
+            'categories' => $categories,
+            'featured_products' => $featured,
+            'new_arrivals' => $newArrivals,
+            'best_sellers' => $bestSellers,
+            'banner_main' => null,
+            'banner_mid' => null,
+            'ad_slots' => [],
         ];
 
         return $this->view('home/index', $data);

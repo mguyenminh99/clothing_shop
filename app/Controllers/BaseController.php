@@ -36,6 +36,14 @@ abstract class BaseController
             // Fail-safe: don't break rendering if DB not ready; footer will simply render empty
             $this->data['data_domain'] = [];
         }
+
+        // Cart count for header
+        $this->data['cart_count'] = 0;
+        if (!empty($_SESSION['cart']) && is_array($_SESSION['cart'])) {
+            foreach ($_SESSION['cart'] as $item) {
+                $this->data['cart_count'] += (int)($item['quantity'] ?? 0);
+            }
+        }
     }
 
     protected function view($view, $data = [])

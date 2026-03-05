@@ -1,10 +1,30 @@
 <?php
 
 use App\Controllers\HomeController;
+use App\Controllers\ProductController;
+use App\Controllers\CartController;
+use App\Controllers\OrderController;
 use App\Middleware\MiddlewareHelper;
 
 // Home routes - có thể truyền số lần request tùy ý
 $router->get('/', [HomeController::class, 'index'], [MiddlewareHelper::rateLimit()]); // 1 request/second
+
+// Shop / Products
+$router->get('/products', [ProductController::class, 'index']);
+$router->get('/products/{id}', [ProductController::class, 'show'])->where(['id' => '[0-9]+']);
+$router->get('/sale', [ProductController::class, 'sale']);
+$router->get('/category/{id}', [ProductController::class, 'category'])->where(['id' => '[0-9]+']);
+
+// Cart
+$router->get('/cart', [CartController::class, 'index']);
+$router->post('/cart/add', [CartController::class, 'add']);
+$router->post('/cart/update', [CartController::class, 'update']);
+$router->post('/cart/remove', [CartController::class, 'remove']);
+
+// Checkout / Order
+$router->get('/checkout', [OrderController::class, 'checkout']);
+$router->post('/checkout', [OrderController::class, 'place']);
+$router->get('/order/success/{id}', [OrderController::class, 'success'])->where(['id' => '[0-9]+']);
 
 // maintenance routes
 $router->get('/maintenance', [HomeController::class, 'maintenance']); // 10 requests/hour
