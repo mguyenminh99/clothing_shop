@@ -34,8 +34,11 @@ class View
         // Set content for layout
         self::$data['content'] = $content;
         
-        // Render with layout
-        return self::extend('layouts/app');
+        // Layout: allow override via data (e.g. admin uses layouts/admin)
+        $layout = self::$data['_layout'] ?? 'layouts/app';
+        unset(self::$data['_layout']);
+        
+        return self::extend($layout);
     }
 
     public static function make($view, $data = [])

@@ -374,18 +374,44 @@ body {
 .product-link:hover .product-image { transform: scale(1.03); }
 .product-badge {
     position: absolute;
-    top: 8px;
-    left: 8px;
-    padding: 4px 8px;
+    top: 10px;
+    left: 10px;
+    padding: 5px 10px;
     font-size: 10px;
     font-weight: 700;
     text-transform: uppercase;
-    border-radius: 3px;
+    border-radius: 20px;
     background: #1a1a1a;
     color: #fff;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    width: auto;
+    right: auto;
+    letter-spacing: 0.02em;
 }
-.product-badge.sale { background: #c00; }
-.product-badge.best { background: #d4af37; color: #1a1a1a; }
+/* Sale: badge đơn giản, góc dưới phải trong ô ảnh */
+.product-badge.sale {
+    top: auto;
+    left: auto;
+    bottom: 8px;
+    right: 8px;
+    width: auto;
+    height: auto;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    border-radius: 4px;
+    background: #0d9488;
+    color: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,.15);
+}
+.product-badge.sale::before { display: none; }
+.product-badge.sale i { display: none; }
+.product-badge.best { left: auto; right: 10px; background: #d4af37; color: #1a1a1a; border-radius: 20px; }
+.product-badge.new { left: 10px; border-radius: 20px; }
 .product-info { padding: 0 4px; }
 .product-name {
     font-size: 14px;

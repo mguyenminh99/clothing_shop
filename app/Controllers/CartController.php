@@ -79,9 +79,10 @@ class CartController extends BaseController
             $this->flashMessage('Please select a variant (color/size) on the product page.', 'error');
             return $this->redirect($this->backUrl());
         }
-        $price = isset($product->discount_price) && $product->discount_price > 0
-            ? (float) $product->discount_price
-            : (float) ($product->base_price ?? 0);
+        $basePrice = (float) ($product->base_price ?? 0);
+        $discountPrice = isset($product->discount_price) && $product->discount_price > 0 ? (float) $product->discount_price : null;
+        $isOnSale = $discountPrice !== null && ($basePrice <= 0 || $discountPrice < $basePrice);
+        $price = $isOnSale ? $discountPrice : $basePrice;
         $name = $product->name ?? '';
         $image = $product->thumbnail ?? '';
         $variantLabel = '';
@@ -89,7 +90,9 @@ class CartController extends BaseController
             foreach ($productWithDetails->variants as $v) {
                 $v = is_array($v) ? (object) $v : $v;
                 if ((int)($v->id ?? 0) === $variantId) {
-                    $price = isset($v->price) ? (float) $v->price : $price;
+                    if (!$isOnSale && isset($v->price)) {
+                        $price = (float) $v->price;
+                    }
                     $variantLabel = trim(($v->color_name ?? '') . ' / ' . ($v->size_name ?? ''));
                     break;
                 }

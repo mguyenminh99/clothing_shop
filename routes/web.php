@@ -29,6 +29,33 @@ $router->get('/order/success/{id}', [OrderController::class, 'success'])->where(
 // maintenance routes
 $router->get('/maintenance', [HomeController::class, 'maintenance']); // 10 requests/hour
 
+// ================================================================
+// Admin (login không cần auth, các route khác redirect về /admin/login nếu chưa đăng nhập)
+use App\Controllers\Admin\AuthController;
+use App\Controllers\Admin\DashboardController;
+use App\Controllers\Admin\ProductController as AdminProductController;
+use App\Controllers\Admin\OrderController as AdminOrderController;
+use App\Controllers\Admin\BannerController;
+
+$router->get('/admin/login', [AuthController::class, 'loginForm']);
+$router->post('/admin/login', [AuthController::class, 'login']);
+$router->get('/admin/logout', [AuthController::class, 'logout']);
+
+$router->get('/admin', [DashboardController::class, 'index']);
+$router->get('/admin/products', [AdminProductController::class, 'index']);
+$router->get('/admin/products/create', [AdminProductController::class, 'create']);
+$router->post('/admin/products/store', [AdminProductController::class, 'store']);
+$router->get('/admin/products/edit/{id}', [AdminProductController::class, 'edit'])->where(['id' => '[0-9]+']);
+$router->post('/admin/products/update/{id}', [AdminProductController::class, 'update'])->where(['id' => '[0-9]+']);
+$router->post('/admin/products/delete/{id}', [AdminProductController::class, 'delete'])->where(['id' => '[0-9]+']);
+
+$router->get('/admin/orders', [AdminOrderController::class, 'index']);
+$router->get('/admin/orders/{id}', [AdminOrderController::class, 'show'])->where(['id' => '[0-9]+']);
+$router->post('/admin/orders/update-status/{id}', [AdminOrderController::class, 'updateStatus'])->where(['id' => '[0-9]+']);
+
+$router->get('/admin/banners', [BannerController::class, 'index']);
+$router->post('/admin/banners/save', [BannerController::class, 'save']);
+
 // Topic routes
 // $router->group('/topic', function ($router) {
 //     $router->get('/', [TopicController::class, 'index']);
