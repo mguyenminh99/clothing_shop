@@ -104,8 +104,8 @@ $productImages = $isEdit && !empty($product->images) ? $product->images : [];
         </div>
 
         <div class="product-form-section">
-            <h3 class="product-form-section-title"><i class="fas fa-palette"></i> Thuộc tính / Biến thể (màu, size)</h3>
-            <p class="form-hint" style="margin-bottom:12px;">Thêm các biến thể để khách chọn (màu, size, giá riêng, tồn kho, SKU). Trang chi tiết sản phẩm sẽ hiển thị các lựa chọn này. Cần có dữ liệu Màu và Size trong database (bảng <code>colors</code>, <code>sizes</code>).</p>
+            <h3 class="product-form-section-title"><i class="fas fa-palette"></i> Thuộc tính / Biến thể (màu, size) <span class="required">*</span></h3>
+            <p class="form-hint" style="margin-bottom:12px;">Bắt buộc phải có ít nhất một biến thể (chọn Màu hoặc Size). Khách hàng chỉ có thể thêm vào giỏ khi sản phẩm có biến thể. Thêm các biến thể với giá, tồn kho, SKU tùy chọn. Cần có dữ liệu Màu và Size trong database (bảng <code>colors</code>, <code>sizes</code>).</p>
             <?php if (!empty($variants)): ?>
             <table class="admin-table" style="margin-bottom:16px;max-width:720px;">
                 <thead>

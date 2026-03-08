@@ -140,18 +140,26 @@ class OrderController extends BaseController
 
             $itemTable = (new \App\Models\OrderItem())->getTable();
             $db = (new \App\Models\OrderItem())->getDb();
+            $orderItemRepo = new \App\Repositories\OrderItemRepository();
+            $hasProductIdColumn = $orderItemRepo->orderItemsHaveProductIdColumn();
+
             foreach ($cart as $item) {
                 $qty = (int)($item['quantity'] ?? 0);
                 $price = (float)($item['price'] ?? 0);
+                $productId = (int)($item['product_id'] ?? 0);
                 $variantId = isset($item['product_variant_id']) && (int)$item['product_variant_id'] > 0
                     ? (int) $item['product_variant_id']
                     : null;
-                $db->insert($itemTable, [
+                $row = [
                     'order_id' => $orderId,
                     'product_variant_id' => $variantId,
                     'quantity' => $qty,
                     'price' => $price,
-                ]);
+                ];
+                if ($hasProductIdColumn && $productId > 0) {
+                    $row['product_id'] = $productId;
+                }
+                $db->insert($itemTable, $row);
             }
 
             $this->setCart([]);

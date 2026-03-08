@@ -46,8 +46,10 @@ $headerCategories = $categories ?? [];
                         <button type="submit" class="header-search-btn" title="Search"><i class="fas fa-search"></i></button>
                     </form>
                 </div>
-                <a href="#" class="icon-link account-icon" title="Account"><i class="fas fa-user"></i></a>
-                <a href="<?= base_url() ?>/cart" class="icon-link cart-icon" title="Cart"><i class="fas fa-shopping-bag"></i><span class="cart-count"><?= (int)($cart_count ?? 0) ?></span></a>
+                <a href="<?= base_url() ?>/cart" class="icon-link cart-icon" title="Cart" aria-label="Cart (<?= (int)($cart_count ?? 0) ?> items)">
+                    <span class="cart-icon-wrap"><i class="fas fa-shopping-bag"></i></span>
+                    <span class="cart-count"><?= (int)($cart_count ?? 0) ?></span>
+                </a>
             </div>
         </div>
     </div>

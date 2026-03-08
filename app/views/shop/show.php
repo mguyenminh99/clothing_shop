@@ -59,7 +59,7 @@ $hasDiscount = $originPrice > 0 && $price < $originPrice;
                 </div>
                 <?php endif; ?>
                 <?php if (empty($variants)): ?>
-                    <p class="product-no-variant">No options available. This product cannot be added to cart.</p>
+                    <p class="product-no-variant">Sản phẩm chưa có biến thể (màu/size). Không thể thêm vào giỏ. Vui lòng liên hệ cửa hàng.</p>
                 <?php else: ?>
                 <form method="post" action="<?= $base ?>/cart/add" class="product-add-cart-form" id="add-to-cart-form">
                     <input type="hidden" name="product_id" value="<?= (int)($product->id ?? 0) ?>">

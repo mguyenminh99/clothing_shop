@@ -75,8 +75,12 @@ class CartController extends BaseController
         }
         $productWithDetails = $this->productRepository->getByIdWithDetails($productId);
         $hasVariants = $productWithDetails && !empty($productWithDetails->variants);
-        if ($hasVariants && !$variantId) {
-            $this->flashMessage('Please select a variant (color/size) on the product page.', 'error');
+        if (!$hasVariants) {
+            $this->flashMessage('Sản phẩm này chưa có biến thể (màu/size), không thể thêm vào giỏ.', 'error');
+            return $this->redirect($this->backUrl());
+        }
+        if ($variantId < 1) {
+            $this->flashMessage('Vui lòng chọn biến thể (màu/size) trên trang sản phẩm.', 'error');
             return $this->redirect($this->backUrl());
         }
         $basePrice = (float) ($product->base_price ?? 0);

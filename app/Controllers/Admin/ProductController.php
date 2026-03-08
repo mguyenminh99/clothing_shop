@@ -154,6 +154,20 @@ class ProductController extends BaseAdminController
             return $this->redirect(rtrim(base_url(), '/') . '/admin/products/create');
         }
 
+        $variantsFromPost = isset($_POST['variants']) && is_array($_POST['variants']) ? $_POST['variants'] : [];
+        $validVariantCount = 0;
+        foreach ($variantsFromPost as $row) {
+            $colorId = isset($row['color_id']) ? (int) $row['color_id'] : 0;
+            $sizeId = isset($row['size_id']) ? (int) $row['size_id'] : 0;
+            if ($colorId > 0 || $sizeId > 0) {
+                $validVariantCount++;
+            }
+        }
+        if ($validVariantCount < 1) {
+            $this->error('Bắt buộc phải thêm ít nhất một biến thể (màu/size) cho sản phẩm.');
+            return $this->redirect(rtrim(base_url(), '/') . '/admin/products/create');
+        }
+
         $thumbPath = $this->handleUpload('thumbnail_file');
         if ($thumbPath) {
             $thumbnailUrl = $thumbPath;
@@ -273,10 +287,33 @@ class ProductController extends BaseAdminController
             'is_new' => $isNew,
             'is_best_seller' => $isBestSeller,
         ];
-        $this->productRepository->update($id, $data);
-
         $deleteVariantIds = isset($_POST['delete_variant_ids']) && is_array($_POST['delete_variant_ids'])
             ? array_map('intval', array_filter($_POST['delete_variant_ids'])) : [];
+        $variantsFromPost = isset($_POST['variants']) && is_array($_POST['variants']) ? $_POST['variants'] : [];
+        $newValidCount = 0;
+        foreach ($variantsFromPost as $row) {
+            $colorId = isset($row['color_id']) ? (int) $row['color_id'] : 0;
+            $sizeId = isset($row['size_id']) ? (int) $row['size_id'] : 0;
+            if ($colorId > 0 || $sizeId > 0) {
+                $newValidCount++;
+            }
+        }
+        $currentVariants = $this->productVariantRepository->getByProductId($id);
+        $deleteSet = array_flip($deleteVariantIds);
+        $remainingAfterDelete = 0;
+        foreach ($currentVariants as $v) {
+            $vid = (int) (is_object($v) ? $v->id : ($v['id'] ?? 0));
+            if ($vid > 0 && !isset($deleteSet[$vid])) {
+                $remainingAfterDelete++;
+            }
+        }
+        if ($remainingAfterDelete + $newValidCount < 1) {
+            $this->error('Sản phẩm bắt buộc phải có ít nhất một biến thể (màu/size). Không thể xóa hết hoặc để trống.');
+            return $this->redirect(rtrim(base_url(), '/') . '/admin/products/edit/' . $id);
+        }
+
+        $this->productRepository->update($id, $data);
+
         foreach ($deleteVariantIds as $vid) {
             if ($vid > 0) {
                 $this->productVariantRepository->delete($vid);
