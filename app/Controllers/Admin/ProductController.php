@@ -351,6 +351,27 @@ class ProductController extends BaseAdminController
         }
     }
 
+    /**
+     * Bật/ẩn sản phẩm (chuyển trạng thái active ↔ inactive).
+     */
+    public function toggleStatus($id)
+    {
+        if ($this->requireAdmin() !== null) {
+            return $this->requireAdmin();
+        }
+        $id = (int) $id;
+        $product = $this->productRepository->findById($id);
+        if (!$product) {
+            $this->error('Sản phẩm không tồn tại.');
+            return $this->redirect(rtrim(base_url(), '/') . '/admin/products');
+        }
+        $current = is_object($product) ? ($product->status ?? 'active') : ($product['status'] ?? 'active');
+        $newStatus = ($current === 'active') ? 'inactive' : 'active';
+        $this->productRepository->update($id, ['status' => $newStatus]);
+        $this->success($newStatus === 'inactive' ? 'Đã ẩn sản phẩm.' : 'Đã bật sản phẩm.');
+        return $this->redirect(rtrim(base_url(), '/') . '/admin/products');
+    }
+
     public function delete($id)
     {
         if ($this->requireAdmin() !== null) {

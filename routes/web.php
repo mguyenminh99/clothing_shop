@@ -47,7 +47,7 @@ $router->get('/admin/products/create', [AdminProductController::class, 'create']
 $router->post('/admin/products/store', [AdminProductController::class, 'store']);
 $router->get('/admin/products/edit/{id}', [AdminProductController::class, 'edit'])->where(['id' => '[0-9]+']);
 $router->post('/admin/products/update/{id}', [AdminProductController::class, 'update'])->where(['id' => '[0-9]+']);
-$router->post('/admin/products/delete/{id}', [AdminProductController::class, 'delete'])->where(['id' => '[0-9]+']);
+$router->post('/admin/products/toggle-status/{id}', [AdminProductController::class, 'toggleStatus'])->where(['id' => '[0-9]+']);
 
 $router->get('/admin/orders', [AdminOrderController::class, 'index']);
 $router->get('/admin/orders/{id}', [AdminOrderController::class, 'show'])->where(['id' => '[0-9]+']);

@@ -36,12 +36,18 @@ $total_pages = $pagination['total_pages'] ?? 1;
                 <td><?php if ($imgSrc): ?><img src="<?= htmlspecialchars($imgSrc) ?>" alt="" style="width:50px;height:50px;object-fit:cover;"><?php else: ?>—<?php endif; ?></td>
                 <td><?= htmlspecialchars($name) ?></td>
                 <td><?= number_format((float)$basePrice, 0, ',', '.') ?></td>
-                <td><?= htmlspecialchars($status) ?></td>
+                <td><?= $status === 'inactive' ? 'Ẩn' : 'Đang bán' ?></td>
                 <td>
                     <a href="<?= $adminBase ?>/products/edit/<?= (int)$id ?>" class="btn btn-secondary btn-sm">Sửa</a>
-                    <form method="post" action="<?= $adminBase ?>/products/delete/<?= (int)$id ?>" style="display:inline;" onsubmit="return confirm('Xóa sản phẩm này?');">
-                        <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
+                    <?php if ($status === 'active'): ?>
+                    <form method="post" action="<?= $adminBase ?>/products/toggle-status/<?= (int)$id ?>" style="display:inline;">
+                        <button type="submit" class="btn btn-outline btn-sm" title="Ẩn sản phẩm">Ẩn</button>
                     </form>
+                    <?php else: ?>
+                    <form method="post" action="<?= $adminBase ?>/products/toggle-status/<?= (int)$id ?>" style="display:inline;">
+                        <button type="submit" class="btn btn-outline btn-sm" title="Bật lại sản phẩm">Bật</button>
+                    </form>
+                    <?php endif; ?>
                 </td>
             </tr>
             <?php endforeach; ?>

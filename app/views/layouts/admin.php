@@ -32,6 +32,8 @@ $title = $title ?? 'Admin';
         .btn-danger { background: #dc2626; color: #fff; }
         .btn-danger:hover { background: #b91c1c; }
         .btn-secondary { background: #64748b; color: #fff; }
+        .btn-outline { background: transparent; color: #64748b; border: 1px solid #94a3b8; }
+        .btn-outline:hover { background: #f1f5f9; color: #475569; }
         .btn-sm { padding: 6px 12px; font-size: 13px; }
         table { width: 100%; border-collapse: collapse; }
         th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #e2e8f0; }
